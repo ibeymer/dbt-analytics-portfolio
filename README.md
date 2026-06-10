@@ -53,7 +53,9 @@ embedded warehouse, so there are no accounts, servers, or credentials.
 
 ```
 dbt-analytics-portfolio/
-├── scripts/generate_seeds.py     # deterministic synthetic-data generator
+├── scripts/
+│   ├── run_pipeline.py           # one-command orchestrator: extract -> load -> transform -> test
+│   └── generate_seeds.py         # deterministic synthetic-data generator (the "extract" step)
 ├── seeds/                        # raw CSVs (football/, golf/) + tests
 ├── models/
 │   ├── staging/                  # 1:1 with sources — clean & type only (views)
@@ -74,20 +76,39 @@ dbt-analytics-portfolio/
 Requires Python 3.9+.
 
 ```bash
-# 1. Install dependencies
 pip install -r requirements.txt
-
-# 2. (Optional) regenerate the synthetic raw data — already committed under seeds/
-python scripts/generate_seeds.py
-
-# 3. Install the dbt_utils package
-dbt deps --profiles-dir .
-
-# 4. Build everything: load seeds, run all models, run all tests
-dbt build --profiles-dir .
+python scripts/run_pipeline.py
 ```
 
-That creates `dev.duckdb` in the project root with all marts populated. Explore it:
+That's it. `run_pipeline.py` is the orchestrator — it runs the whole flow end to
+end, the same way a scheduler (Airflow, Dagster, cron) would:
+
+```
+EXTRACT  -> generate raw source CSVs        (scripts/generate_seeds.py)
+LOAD     -> load CSVs into DuckDB           (dbt seed)
+TRANSFORM-> build staging -> int -> marts   (dbt run)
+TEST     -> run all data-quality tests      (dbt test)
+```
+
+Useful flags:
+
+```bash
+python scripts/run_pipeline.py --target qa       # run against the qa warehouse
+python scripts/run_pipeline.py --skip-generate   # reuse committed seed CSVs
+python scripts/run_pipeline.py --full-refresh    # rebuild all tables from scratch
+```
+
+It exits non-zero if any step fails, so CI / schedulers can gate on it.
+
+### Or run the steps manually
+
+```bash
+python scripts/generate_seeds.py     # 1. extract: regenerate raw CSVs (optional)
+dbt deps --profiles-dir .            # 2. install the dbt_utils package
+dbt build --profiles-dir .           # 3. load seeds + run models + run tests
+```
+
+Either path creates `dev.duckdb` in the project root with all marts populated. Explore it:
 
 ```bash
 dbt show --profiles-dir . --inline "select * from main_marts.mart_football_team_standings order by league_position limit 10"
