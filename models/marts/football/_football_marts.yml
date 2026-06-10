@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: dim_football_teams
+    description: "Team dimension."
+    columns:
+      - name: team_id
+        data_tests: [unique, not_null]
+
+  - name: dim_football_players
+    description: "Player dimension with current team and derived age."
+    columns:
+      - name: player_id
+        data_tests: [unique, not_null]
+
+  - name: fct_football_matches
+    description: "Match fact, one row per fixture, with team names and outcome."
+    columns:
+      - name: match_id
+        data_tests: [unique, not_null]
+      - name: outcome
+        data_tests:
+          - accepted_values:
+              values: ["home_win", "away_win", "draw"]
+
+  - name: mart_football_team_standings
+    description: >
+      Season league table. One row per team per season, ranked by points then
+      goal difference.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [season, team_id]
+    columns:
+      - name: league_position
+        data_tests: [not_null]
+      - name: points
+        data_tests: [not_null]
+
+  - name: mart_football_player_season_summary
+    description: "Per-player season totals and per-90 goal contribution rate."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [season, player_id]
+    columns:
+      - name: goal_contributions
+        data_tests: [not_null]

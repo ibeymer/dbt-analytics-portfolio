@@ -1,0 +1,31 @@
+version: 2
+
+models:
+  - name: int_football__match_results
+    description: >
+      Match results unpivoted to one row per team per match, with result (W/D/L),
+      points, and goals for/against from that team's perspective.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [match_id, team_id]
+    columns:
+      - name: result
+        data_tests:
+          - accepted_values:
+              values: ["W", "D", "L"]
+      - name: points
+        data_tests:
+          - accepted_values:
+              values: [0, 1, 3]
+
+  - name: int_golf__round_scoring
+    description: >
+      Round-grain scoring enriched with course par and hole-level aggregates
+      (putts, greens in regulation, fairways hit).
+    columns:
+      - name: round_id
+        data_tests: [unique, not_null]
+      - name: holes_played
+        data_tests:
+          - accepted_values:
+              values: [18]

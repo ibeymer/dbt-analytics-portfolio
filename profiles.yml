@@ -1,0 +1,15 @@
+# Project-local profiles file. DuckDB needs no server or credentials — the whole
+# warehouse is a single file on disk, so `dbt build --profiles-dir .` works
+# anywhere immediately after cloning.
+dbt_analytics_portfolio:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "dev.duckdb"
+      threads: 4
+    # A separate target keeps QA-branch runs isolated in their own warehouse file.
+    qa:
+      type: duckdb
+      path: "qa.duckdb"
+      threads: 4

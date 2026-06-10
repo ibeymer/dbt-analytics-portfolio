@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: stg_football__teams
+    description: "Cleaned, typed football teams. One row per team."
+    columns:
+      - name: team_id
+        data_tests: [unique, not_null]
+
+  - name: stg_football__players
+    description: "Cleaned, typed players with squad membership."
+    columns:
+      - name: player_id
+        data_tests: [unique, not_null]
+      - name: team_id
+        data_tests:
+          - relationships:
+              to: ref('stg_football__teams')
+              field: team_id
+      - name: position
+        data_tests:
+          - accepted_values:
+              values: ["GK", "DF", "MF", "FW"]
+
+  - name: stg_football__matches
+    description: "Cleaned, typed match results. One row per fixture."
+    columns:
+      - name: match_id
+        data_tests: [unique, not_null]
+      - name: home_goals
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: away_goals
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: stg_football__player_match_stats
+    description: "Cleaned, typed per-player match box scores."
+    columns:
+      - name: stat_id
+        data_tests: [unique, not_null]
+      - name: minutes_played
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 120

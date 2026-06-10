@@ -1,0 +1,44 @@
+name: "dbt_analytics_portfolio"
+version: "1.0.0"
+config-version: 2
+
+# This profile name is matched in profiles.yml (kept in the repo root so the
+# project is clone-and-run with `dbt build --profiles-dir .`).
+profile: "dbt_analytics_portfolio"
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# --------------------------------------------------------------------------- #
+# Seeds: synthetic raw data lands in a `raw` schema, one CSV = one source table
+# --------------------------------------------------------------------------- #
+seeds:
+  dbt_analytics_portfolio:
+    +schema: raw
+    football:
+      +schema: raw
+    golf:
+      +schema: raw
+
+# --------------------------------------------------------------------------- #
+# Models: staging (views) -> intermediate (views) -> marts (tables)
+# --------------------------------------------------------------------------- #
+models:
+  dbt_analytics_portfolio:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    marts:
+      +materialized: table
+      +schema: marts

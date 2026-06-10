@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: stg_golf__players
+    description: "Cleaned, typed golfer roster. One row per player."
+    columns:
+      - name: player_id
+        data_tests: [unique, not_null]
+
+  - name: stg_golf__courses
+    description: "Cleaned, typed course catalog. One row per course."
+    columns:
+      - name: course_id
+        data_tests: [unique, not_null]
+
+  - name: stg_golf__rounds
+    description: "Cleaned, typed scorecards at the round grain."
+    columns:
+      - name: round_id
+        data_tests: [unique, not_null]
+      - name: player_id
+        data_tests:
+          - relationships:
+              to: ref('stg_golf__players')
+              field: player_id
+      - name: total_strokes
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 50
+              max_value: 120
+
+  - name: stg_golf__hole_scores
+    description: "Cleaned, typed hole-by-hole scoring. 18 rows per round."
+    columns:
+      - name: score_id
+        data_tests: [unique, not_null]
+      - name: round_id
+        data_tests:
+          - relationships:
+              to: ref('stg_golf__rounds')
+              field: round_id
+      - name: strokes
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
