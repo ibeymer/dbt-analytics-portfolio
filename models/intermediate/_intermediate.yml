@@ -7,12 +7,14 @@ models:
       for/against, and point differential from that team's perspective.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [game_id, team_id]
+          arguments:
+            combination_of_columns: [game_id, team_id]
     columns:
       - name: result
         data_tests:
           - accepted_values:
-              values: ["W", "L", "T"]
+              arguments:
+                values: ["W", "L", "T"]
 
   - name: int_golf__player_tournament_scoring
     description: >
@@ -20,10 +22,12 @@ models:
       cumulative score to par) joined to the finishing position.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [tournament_id, player_id]
+          arguments:
+            combination_of_columns: [tournament_id, player_id]
     columns:
       - name: rounds_played
         data_tests:
           - dbt_utils.accepted_range:
-              min_value: 1
-              max_value: 4
+              arguments:
+                min_value: 1
+                max_value: 4
