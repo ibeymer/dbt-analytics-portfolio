@@ -1,0 +1,33 @@
+team_id,abbreviation,display_name,location,nickname,conference,division
+2,BUF,Buffalo Bills,Buffalo,Bills,American Football Conference,AFC East
+15,MIA,Miami Dolphins,Miami,Dolphins,American Football Conference,AFC East
+20,NYJ,New York Jets,New York,Jets,American Football Conference,AFC East
+17,NE,New England Patriots,New England,Patriots,American Football Conference,AFC East
+33,BAL,Baltimore Ravens,Baltimore,Ravens,American Football Conference,AFC North
+5,CLE,Cleveland Browns,Cleveland,Browns,American Football Conference,AFC North
+23,PIT,Pittsburgh Steelers,Pittsburgh,Steelers,American Football Conference,AFC North
+4,CIN,Cincinnati Bengals,Cincinnati,Bengals,American Football Conference,AFC North
+34,HOU,Houston Texans,Houston,Texans,American Football Conference,AFC South
+30,JAX,Jacksonville Jaguars,Jacksonville,Jaguars,American Football Conference,AFC South
+11,IND,Indianapolis Colts,Indianapolis,Colts,American Football Conference,AFC South
+10,TEN,Tennessee Titans,Tennessee,Titans,American Football Conference,AFC South
+12,KC,Kansas City Chiefs,Kansas City,Chiefs,American Football Conference,AFC West
+13,LV,Las Vegas Raiders,Las Vegas,Raiders,American Football Conference,AFC West
+7,DEN,Denver Broncos,Denver,Broncos,American Football Conference,AFC West
+24,LAC,Los Angeles Chargers,Los Angeles,Chargers,American Football Conference,AFC West
+6,DAL,Dallas Cowboys,Dallas,Cowboys,National Football Conference,NFC East
+21,PHI,Philadelphia Eagles,Philadelphia,Eagles,National Football Conference,NFC East
+19,NYG,New York Giants,New York,Giants,National Football Conference,NFC East
+28,WSH,Washington Commanders,Washington,Commanders,National Football Conference,NFC East
+8,DET,Detroit Lions,Detroit,Lions,National Football Conference,NFC North
+9,GB,Green Bay Packers,Green Bay,Packers,National Football Conference,NFC North
+16,MIN,Minnesota Vikings,Minnesota,Vikings,National Football Conference,NFC North
+3,CHI,Chicago Bears,Chicago,Bears,National Football Conference,NFC North
+27,TB,Tampa Bay Buccaneers,Tampa Bay,Buccaneers,National Football Conference,NFC South
+18,NO,New Orleans Saints,New Orleans,Saints,National Football Conference,NFC South
+1,ATL,Atlanta Falcons,Atlanta,Falcons,National Football Conference,NFC South
+29,CAR,Carolina Panthers,Carolina,Panthers,National Football Conference,NFC South
+25,SF,San Francisco 49ers,San Francisco,49ers,National Football Conference,NFC West
+14,LAR,Los Angeles Rams,Los Angeles,Rams,National Football Conference,NFC West
+26,SEA,Seattle Seahawks,Seattle,Seahawks,National Football Conference,NFC West
+22,ARI,Arizona Cardinals,Arizona,Cardinals,National Football Conference,NFC West

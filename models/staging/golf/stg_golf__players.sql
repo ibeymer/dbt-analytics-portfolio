@@ -7,11 +7,8 @@ with source as (
 renamed as (
 
     select
-        cast(player_id as integer)        as player_id,
-        full_name,
-        country,
-        cast(turned_pro_year as integer)  as turned_pro_year,
-        handedness
+        cast(player_id as integer) as player_id,
+        player_name
 
     from source
 
