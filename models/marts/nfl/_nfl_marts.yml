@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: dim_nfl_teams
+    description: "NFL team dimension with conference and division."
+    columns:
+      - name: team_id
+        data_tests: [unique, not_null]
+
+  - name: fct_nfl_games
+    description: "Game fact, one row per game, with team names, margin, and outcome."
+    columns:
+      - name: game_id
+        data_tests: [unique, not_null]
+      - name: outcome
+        data_tests:
+          - accepted_values:
+              values: ["home_win", "away_win", "tie"]
+
+  - name: mart_nfl_standings
+    description: >
+      Season standings, one row per team, with win pct, points for/against and
+      division rank.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [season, team_id]
+    columns:
+      - name: win_pct
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+      - name: division_rank
+        data_tests: [not_null]

@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_nfl__teams
+    description: "Cleaned, typed NFL teams with conference and division (ESPN)."
+    columns:
+      - name: team_id
+        data_tests: [unique, not_null]
+      - name: conference
+        data_tests:
+          - accepted_values:
+              values: ["American Football Conference", "National Football Conference"]
+
+  - name: stg_nfl__games
+    description: "Cleaned, typed regular-season games with final scores (ESPN)."
+    columns:
+      - name: game_id
+        data_tests: [unique, not_null]
+      - name: week
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 18
+      - name: home_team_id
+        data_tests:
+          - relationships:
+              to: ref('stg_nfl__teams')
+              field: team_id
+      - name: away_team_id
+        data_tests:
+          - relationships:
+              to: ref('stg_nfl__teams')
+              field: team_id
+      - name: home_score
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 0

@@ -6,8 +6,5 @@ with players as (
 
 select
     player_id,
-    full_name,
-    country,
-    turned_pro_year,
-    handedness
+    player_name
 from players

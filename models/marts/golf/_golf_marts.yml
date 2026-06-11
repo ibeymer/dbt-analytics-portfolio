@@ -2,41 +2,30 @@ version: 2
 
 models:
   - name: dim_golf_players
-    description: "Golfer dimension."
+    description: "Golfer dimension (ESPN)."
     columns:
       - name: player_id
         data_tests: [unique, not_null]
 
-  - name: dim_golf_courses
-    description: "Course dimension."
+  - name: dim_golf_tournaments
+    description: "Tournament dimension (ESPN)."
     columns:
-      - name: course_id
+      - name: tournament_id
         data_tests: [unique, not_null]
 
   - name: fct_golf_rounds
-    description: "Round fact with score-to-par and per-round GIR / fairway rates."
-    columns:
-      - name: round_id
-        data_tests: [unique, not_null]
-      - name: gir_pct
-        data_tests:
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
-      - name: fairway_pct
-        data_tests:
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
+    description: "Round fact: one row per player per round, with strokes and score to par."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [tournament_id, player_id, round_number]
 
   - name: mart_golf_player_scoring_summary
     description: >
-      Player scoring profile across all rounds: scoring average, average score
-      to par, putts per round, GIR% and fairway%. Ranked by scoring average.
+      Player scoring profile across all tournaments: scoring average, average
+      score to par, cuts made and best finish. Ranked by scoring average
+      (min 4 rounds).
     columns:
       - name: player_id
         data_tests: [unique, not_null]
       - name: scoring_rank
         data_tests: [unique, not_null]
-      - name: rounds_played
-        data_tests: [not_null]

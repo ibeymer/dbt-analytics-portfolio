@@ -1,46 +1,53 @@
 version: 2
 
 models:
+  - name: stg_golf__tournaments
+    description: "Cleaned, typed PGA tournaments (ESPN). One row per event."
+    columns:
+      - name: tournament_id
+        data_tests: [unique, not_null]
+
   - name: stg_golf__players
-    description: "Cleaned, typed golfer roster. One row per player."
+    description: "Cleaned, typed golfer roster (ESPN). One row per player."
     columns:
       - name: player_id
         data_tests: [unique, not_null]
 
-  - name: stg_golf__courses
-    description: "Cleaned, typed course catalog. One row per course."
+  - name: stg_golf__results
+    description: "Player finish per tournament (ESPN). One row per player per event."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [tournament_id, player_id]
     columns:
-      - name: course_id
-        data_tests: [unique, not_null]
-
-  - name: stg_golf__rounds
-    description: "Cleaned, typed scorecards at the round grain."
-    columns:
-      - name: round_id
-        data_tests: [unique, not_null]
+      - name: tournament_id
+        data_tests:
+          - relationships:
+              to: ref('stg_golf__tournaments')
+              field: tournament_id
       - name: player_id
         data_tests:
           - relationships:
               to: ref('stg_golf__players')
               field: player_id
-      - name: total_strokes
-        data_tests:
-          - dbt_utils.accepted_range:
-              min_value: 50
-              max_value: 120
 
-  - name: stg_golf__hole_scores
-    description: "Cleaned, typed hole-by-hole scoring. 18 rows per round."
+  - name: stg_golf__round_scores
+    description: "Per-round strokes and score to par (ESPN). One row per player per round."
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [tournament_id, player_id, round_number]
     columns:
-      - name: score_id
-        data_tests: [unique, not_null]
-      - name: round_id
-        data_tests:
-          - relationships:
-              to: ref('stg_golf__rounds')
-              field: round_id
-      - name: strokes
+      - name: round_number
         data_tests:
           - dbt_utils.accepted_range:
               min_value: 1
-              max_value: 10
+              max_value: 4
+      - name: strokes
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 55
+              max_value: 100
+      - name: round_par
+        data_tests:
+          - dbt_utils.accepted_range:
+              min_value: 68
+              max_value: 74

@@ -23,7 +23,7 @@ clean-targets:
 seeds:
   dbt_analytics_portfolio:
     +schema: raw
-    football:
+    nfl:
       +schema: raw
     golf:
       +schema: raw

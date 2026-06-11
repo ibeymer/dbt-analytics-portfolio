@@ -3,7 +3,8 @@
 A single entry point that mirrors what an orchestrator (Airflow, Dagster, cron)
 would call in production:
 
-    1. EXTRACT   generate the raw source data as CSVs (scripts/generate_seeds.py)
+    1. EXTRACT   pull raw source data from the ESPN API into CSVs
+                 (scripts/extract_nfl.py, scripts/extract_golf.py)
     2. LOAD      `dbt seed`  — load those CSVs into DuckDB
     3. TRANSFORM `dbt run`   — build staging -> intermediate -> marts
     4. TEST      `dbt test`  — run all data-quality tests
@@ -42,11 +43,13 @@ def banner(step: str, message: str) -> None:
 
 
 def run_extract() -> None:
-    """Step 1 — generate the raw source CSVs."""
-    banner("EXTRACT", "Generating raw source data -> seeds/*.csv")
-    import generate_seeds
+    """Step 1 — pull raw source data from the ESPN API into seed CSVs."""
+    banner("EXTRACT", "Pulling source data from ESPN -> seeds/*.csv")
+    import extract_nfl
+    import extract_golf
 
-    generate_seeds.main()
+    extract_nfl.main()
+    extract_golf.main()
 
 
 def run_dbt(args: list[str]) -> None:
@@ -67,7 +70,7 @@ def main() -> int:
     parser.add_argument("--target", default="dev",
                         help="dbt target / environment to run against (default: dev)")
     parser.add_argument("--skip-generate", action="store_true",
-                        help="reuse the existing seed CSVs instead of regenerating them")
+                        help="reuse the committed seed CSVs instead of re-pulling from the API")
     parser.add_argument("--skip-deps", action="store_true",
                         help="skip `dbt deps` (use when packages are already installed)")
     parser.add_argument("--full-refresh", action="store_true",

@@ -1,12 +1,13 @@
 {#
-    Career-to-date scoring profile per golfer: scoring average, average score to
-    par, and the headline strokes-gained-style rates (GIR%, fairway%, putts per
-    round). Ranked by scoring average (lower is better).
+    Player scoring profile across all tournaments in the dataset: scoring average
+    (strokes per round), average score to par, rounds and tournaments played, cuts
+    made, and best finish. Ranked by scoring average (lower is better). Minimum 4
+    rounds played so small samples don't top the leaderboard.
 #}
 
-with round_scoring as (
+with scoring as (
 
-    select * from {{ ref('int_golf__round_scoring') }}
+    select * from {{ ref('int_golf__player_tournament_scoring') }}
 
 ),
 
@@ -20,37 +21,32 @@ aggregated as (
 
     select
         player_id,
-        count(*)                    as rounds_played,
-        sum(total_strokes)          as total_strokes,
-        sum(score_to_par)           as cumulative_score_to_par,
-        sum(total_putts)            as total_putts,
-        sum(greens_in_regulation)   as total_gir,
-        sum(holes_played)           as total_holes,
-        sum(fairways_hit)           as total_fairways_hit,
-        sum(fairway_opportunities)  as total_fairway_opportunities
-    from round_scoring
+        count(distinct tournament_id)               as tournaments_played,
+        sum(rounds_played)                          as rounds_played,
+        sum(total_strokes)                          as total_strokes,
+        sum(score_to_par)                           as cumulative_score_to_par,
+        sum(case when made_cut then 1 else 0 end)   as cuts_made,
+        min(finish_position)                        as best_finish
+    from scoring
     group by player_id
 
 )
 
 select
     a.player_id,
-    p.full_name,
-    p.country,
+    p.player_name,
+    a.tournaments_played,
     a.rounds_played,
+    a.cuts_made,
+    a.best_finish,
     round({{ safe_divide('a.total_strokes', 'a.rounds_played') }}, 2)
         as scoring_average,
     round({{ safe_divide('a.cumulative_score_to_par', 'a.rounds_played') }}, 2)
-        as avg_score_to_par,
-    round({{ safe_divide('a.total_putts', 'a.rounds_played') }}, 2)
-        as putts_per_round,
-    round({{ pct('a.total_gir', 'a.total_holes') }}, 1)
-        as gir_pct,
-    round({{ pct('a.total_fairways_hit', 'a.total_fairway_opportunities') }}, 1)
-        as fairway_pct,
+        as avg_score_to_par_per_round,
     row_number() over (
         order by {{ safe_divide('a.total_strokes', 'a.rounds_played') }}
     ) as scoring_rank
 from aggregated a
 inner join players p on a.player_id = p.player_id
+where a.rounds_played >= 4
 order by scoring_rank
