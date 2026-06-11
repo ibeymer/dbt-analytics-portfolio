@@ -17,37 +17,44 @@ models:
     description: "Player finish per tournament (ESPN). One row per player per event."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [tournament_id, player_id]
+          arguments:
+            combination_of_columns: [tournament_id, player_id]
     columns:
       - name: tournament_id
         data_tests:
           - relationships:
-              to: ref('stg_golf__tournaments')
-              field: tournament_id
+              arguments:
+                to: ref('stg_golf__tournaments')
+                field: tournament_id
       - name: player_id
         data_tests:
           - relationships:
-              to: ref('stg_golf__players')
-              field: player_id
+              arguments:
+                to: ref('stg_golf__players')
+                field: player_id
 
   - name: stg_golf__round_scores
     description: "Per-round strokes and score to par (ESPN). One row per player per round."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [tournament_id, player_id, round_number]
+          arguments:
+            combination_of_columns: [tournament_id, player_id, round_number]
     columns:
       - name: round_number
         data_tests:
           - dbt_utils.accepted_range:
-              min_value: 1
-              max_value: 4
+              arguments:
+                min_value: 1
+                max_value: 4
       - name: strokes
         data_tests:
           - dbt_utils.accepted_range:
-              min_value: 55
-              max_value: 100
+              arguments:
+                min_value: 55
+                max_value: 100
       - name: round_par
         data_tests:
           - dbt_utils.accepted_range:
-              min_value: 68
-              max_value: 74
+              arguments:
+                min_value: 68
+                max_value: 74

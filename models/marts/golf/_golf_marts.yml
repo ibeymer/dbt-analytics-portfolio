@@ -17,7 +17,8 @@ models:
     description: "Round fact: one row per player per round, with strokes and score to par."
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [tournament_id, player_id, round_number]
+          arguments:
+            combination_of_columns: [tournament_id, player_id, round_number]
 
   - name: mart_golf_player_scoring_summary
     description: >

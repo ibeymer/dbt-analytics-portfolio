@@ -15,7 +15,8 @@ models:
       - name: outcome
         data_tests:
           - accepted_values:
-              values: ["home_win", "away_win", "tie"]
+              arguments:
+                values: ["home_win", "away_win", "tie"]
 
   - name: mart_nfl_standings
     description: >
@@ -23,12 +24,14 @@ models:
       division rank.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [season, team_id]
+          arguments:
+            combination_of_columns: [season, team_id]
     columns:
       - name: win_pct
         data_tests:
           - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 1
+              arguments:
+                min_value: 0
+                max_value: 1
       - name: division_rank
         data_tests: [not_null]

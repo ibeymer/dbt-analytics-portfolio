@@ -9,7 +9,8 @@ models:
       - name: conference
         data_tests:
           - accepted_values:
-              values: ["American Football Conference", "National Football Conference"]
+              arguments:
+                values: ["American Football Conference", "National Football Conference"]
 
   - name: stg_nfl__games
     description: "Cleaned, typed regular-season games with final scores (ESPN)."
@@ -19,19 +20,23 @@ models:
       - name: week
         data_tests:
           - dbt_utils.accepted_range:
-              min_value: 1
-              max_value: 18
+              arguments:
+                min_value: 1
+                max_value: 18
       - name: home_team_id
         data_tests:
           - relationships:
-              to: ref('stg_nfl__teams')
-              field: team_id
+              arguments:
+                to: ref('stg_nfl__teams')
+                field: team_id
       - name: away_team_id
         data_tests:
           - relationships:
-              to: ref('stg_nfl__teams')
-              field: team_id
+              arguments:
+                to: ref('stg_nfl__teams')
+                field: team_id
       - name: home_score
         data_tests:
           - dbt_utils.accepted_range:
-              min_value: 0
+              arguments:
+                min_value: 0
