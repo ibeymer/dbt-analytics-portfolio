@@ -1,0 +1,31 @@
+name: CI
+
+# Run the full pipeline (load -> transform -> test) on every PR into main and on
+# pushes to the long-lived branches. Uses the committed seed CSVs (--skip-generate)
+# so CI is hermetic and never depends on the live ESPN API being up.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, qa]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: dbt build + test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pipeline (seed -> run -> test)
+        run: python scripts/run_pipeline.py --skip-generate

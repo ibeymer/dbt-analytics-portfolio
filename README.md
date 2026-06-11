@@ -1,5 +1,7 @@
 # dbt Analytics Portfolio — NFL & PGA Golf Pipelines
 
+[![CI](https://github.com/ibeymer/dbt-analytics-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/ibeymer/dbt-analytics-portfolio/actions/workflows/ci.yml)
+
 An end-to-end analytics-engineering project built with **dbt** on **DuckDB**, fed
 by a **live API extract**. It pulls real sports data from ESPN's public API,
 loads it into a warehouse, and transforms it through a layered pipeline
